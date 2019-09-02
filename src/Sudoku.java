@@ -13,19 +13,9 @@ import java.util.ArrayList;
 public class Sudoku {
 	
 	/** The sudoku dimension. */
-	static int sudokuDimension = 9;
-	
+	static final int SUDOKU_DIMENSION = 9;
 	/** The sqrt dimension. */
-	static int sqrtDimension = (int) Math.sqrt(sudokuDimension);
-	
-	/** The sudoku to solve. */
-	static Integer[][] sudokuToSolve = generateSudoku(sudokuDimension);
-	
-	/** The helper sudoku. */
-	static Integer[][] helperSudoku = generateEmptySudoku(sudokuDimension);
-	
-	/** The possible sudoku. */
-	static Integer[][] possibleSudoku = generateSudoku(sudokuDimension);
+	static final int SQRT_DIMENSION = (int) Math.sqrt(SUDOKU_DIMENSION);
 
 	/**
 	 * the main method.
@@ -33,34 +23,30 @@ public class Sudoku {
 	 * @param args the arguments
 	 */
 	public static void main(String[] args) {
-		
-		printSudoku(sudokuToSolve); // debug print
-		/* try to solve the sudoku without guessing to reduce speculation/computing
-		* later on recursive backtracking function
-		* */
-		sudokuToSolve = solveSudokuClean(sudokuToSolve).getSudokuArray(); 
+		Integer[][] sudokuToSolve = generateSudoku(SUDOKU_DIMENSION);
+		printSudoku(sudokuToSolve); // debug print the initial sudoku	
 		/* beware here the recursive magic happens */
-		//solveSudoku(sudokuToSolve); 
-
+		solveSudoku(sudokuToSolve); 
 	}// End of Main
 
-
-
-
 	/**
-	 * Solve sudoku.
+	 * Solve sudoku, by calling itself
 	 *
 	 * @param sudokuToSolveParam the sudoku to solve param
 	 * @return the boolean
 	 */
 	private static Boolean solveSudoku(Integer[][] sudokuToSolveParam) {
-		Integer[][] sudokuToSolveMethod = sudokuToSolveParam;
-		ArrayList<Integer[]> possibleSolutions = new ArrayList<Integer[]>();
-		SudokuObjectSolvability sudokuSolution = new SudokuObjectSolvability();
-		Integer[][] sudokuSolutionVariant;
-		boolean correctPath = false;
-		/* run clean and update current sudoku solution
-		 * solve and update current sudoku until no progress 
+		Integer[][] sudokuToSolveMethod = sudokuToSolveParam; //explicit variable for the given parameter
+		Integer[][] sudokuSolutionVariant; //this will be given to called funtions so we dont lose the "original" sudoku
+		ArrayList<Integer[]> possibleSolutions = new ArrayList<Integer[]>(); //a list with possible solutions to iterate through and call recursively
+		SudokuObjectSolvability sudokuSolution = new SudokuObjectSolvability();// this will be the current return object from solveSudokuclean to store all the interestig values
+		boolean correctPath = false; //this will return wether the current path is viable to the calling function, and eneable it to iterate through possible soltuions
+		
+		/* 
+		 * call solveSudokuClean and save the object to sudokuSolution
+		 * this gives us: 
+		 * sudokuToSolve as an updated sudoku
+		 * possibleSolutions as an iterable list of solutions to try
 		 */
 		sudokuSolution = solveSudokuClean(sudokuToSolveMethod);
 		/*save resulting array*/
@@ -77,25 +63,16 @@ public class Sudoku {
 			sudokuSolutionVariant = insertIntegers(sudokuToSolveMethod, integers);
 			if (solveSudoku(sudokuSolutionVariant)) {
 				correctPath = true;
+			} 
+			/* 
+			 * if it didn't work out then for my sake don't forget to reset the sudoku to the previous state!!
+			 */
+			else { 
+				integers[0] = 0;
+				sudokuSolutionVariant = insertIntegers(sudokuToSolveMethod, integers);
 			}
 		}
 		return correctPath;
-	}
-
-	
-
-
-
-	/**
-	 * Insert integers.
-	 *
-	 * @param sudokuToSolveParam the sudoku to solve param
-	 * @param integersParam the integers param
-	 * @return the integer[][]
-	 */
-	private static Integer[][] insertIntegers(Integer[][] sudokuToSolveParam, Integer[] integersParam) {
-		sudokuToSolveParam[integersParam[1]][integersParam[2]]= integersParam[0];
-		return null;
 	}
 
 
@@ -128,10 +105,11 @@ public class Sudoku {
 		ArrayList<Integer[]> possibleSolutions = new ArrayList<Integer[]>();
 		SudokuObjectSolvability tempSudokuObject = new SudokuObjectSolvability();
 		tempSudokuObject.setSolvable(true);
-		/* tempSudoku will get filled with entries and possible entries,
-		 * if any field remains empty(value = 0) then the sudoku is not solvable
-		 */
+		/* tempSudoku will get filled with entries and possible entries, if any field remains empty(value = 0) then the sudoku is not solvable*/
 		Integer[][] tempSudoku = sudokuToSolve; 
+		
+		/* helperSudoku will take the possible positions for  the numbers 1 - SUDOKU_DIMENSION */
+		Integer[][] helperSudoku = generateEmptySudoku(SUDOKU_DIMENSION);
 		
 		/* run until no more solutions are found in one pass(1..n),
 		 * foundSolutions will increase with the return value of
@@ -139,24 +117,27 @@ public class Sudoku {
 		 */
 		while (numFoundSolutions > 0) {
 			numFoundSolutions = 0; 
-			for (int i = 1; i <= sudokuDimension; i++) {
+			for (int i = 1; i <= SUDOKU_DIMENSION; i++) {
 				/* 
 				 * find all lines where you could put i
 				 * put i in each empty space 
 				 */
-				addEntriesPerLine(i, sudokuDimension);
-
+				helperSudoku = addEntriesPerLine(i, SUDOKU_DIMENSION,sudokuToSolve,helperSudoku);
+				System.out.println("HelperPerLine:");
+				printSudoku(helperSudoku);
 				/*
 				 * if there is already an entry for i in the column remove
 				 * illegal i's in the helperSudoku
 				 */
-				removeEntriesColumn(i, sudokuDimension);
-
+				helperSudoku = removeEntriesColumn(i, SUDOKU_DIMENSION,sudokuToSolve,helperSudoku);
+				System.out.println("removeEntriesColumn:");
+				printSudoku(helperSudoku);
 				/*
 				 * if there is an illegal i in a subSquare, remove it
 				 */
-				removeEntriesSubSquare(i,sudokuDimension);
-				
+				helperSudoku = removeEntriesSubSquare(i,SUDOKU_DIMENSION,sudokuToSolve,helperSudoku);
+				System.out.println("removeEntriesSubSquare:");
+				printSudoku(helperSudoku);
 				/* add found possibilities to tempSudoku */
 				tempSudoku = addSudokuEntries(tempSudoku,helperSudoku);
 				
@@ -167,7 +148,7 @@ public class Sudoku {
 				 * scan helperSudoku for qualified solutions 
 				 * and put them into place
 				 */
-				numFoundSolutions += findSolutionUnam(i,sudokuToSolve);
+				numFoundSolutions += findSolutionUnam(i,sudokuToSolve,sudokuToSolve,helperSudoku);
 
 			}
 			/*if there are fields without entry that have no possible solution && there are free space in the "solved" sudoku*/
@@ -231,7 +212,7 @@ public class Sudoku {
 	 * @param sudokuFind the sudoku find
 	 * @return the int
 	 */
-	private static int findSolutionUnam(int numValue,Integer[][] sudokuFind) {
+	private static int findSolutionUnam(int numValue,Integer[][] sudokuFind,Integer[][] sudokuToSolveParam,Integer[][] helperSudokuParam) {
 		boolean isUnique = false;
 		int counterUnique = 0;
 		int iSolvedSomething = 0;
@@ -249,9 +230,9 @@ public class Sudoku {
 		 * if its the only one potential i in a subSquare its valid too
 		 */
 		/* find i in helperSudoku */
-		for (int i = 0; i < helperSudoku.length; i++) { //iterate row
-			for (int j = 0; j < helperSudoku.length; j++) { //iterate column
-				 if (helperSudoku[j][i]== numValue) {
+		for (int i = 0; i < helperSudokuParam.length; i++) { //iterate row
+			for (int j = 0; j < helperSudokuParam.length; j++) { //iterate column
+				 if (helperSudokuParam[j][i]== numValue) {
 					 /* scan for conflict
 					  * ?conflict break:continue
 					  * continue:
@@ -260,13 +241,13 @@ public class Sudoku {
 					  */
 					 /*scan line*/
 					 for (int j2 = 0; j2 < sudokuFind.length; j2++) {
-						 if (helperSudoku[j2][i]== numValue) {
+						 if (helperSudokuParam[j2][i]== numValue) {
 							 counterUnique++;
 						 }
 					 }
 					 /* scan column*/
 					 for (int j2 = 0; j2 < sudokuFind.length; j2++) {
-						if (helperSudoku[j][j2]== numValue) {
+						if (helperSudokuParam[j][j2]== numValue) {
 							 counterUnique++;
 						 }
 					}
@@ -282,14 +263,14 @@ public class Sudoku {
 					 /* scan subsquare */
 					if (!isUnique) {
 						/* what subsquare am i in? */
-						subSquareX = (j/sqrtDimension);
-						subSquareY = (i/sqrtDimension);
-						offSetX =    (subSquareX*sqrtDimension);
-						offSetY =	 (subSquareY*sqrtDimension);	
+						subSquareX = (j/SQRT_DIMENSION);
+						subSquareY = (i/SQRT_DIMENSION);
+						offSetX =    (subSquareX*SQRT_DIMENSION);
+						offSetY =	 (subSquareY*SQRT_DIMENSION);	
 						//scan subsquare */
-						for (int j2 = offSetY; j2 < offSetY+sqrtDimension; j2++) { //iterate row
-							for (int k = offSetX ; k < offSetX+sqrtDimension ; k++) { //iterate column
-								if (helperSudoku[k][j2]== numValue) {
+						for (int j2 = offSetY; j2 < offSetY+SQRT_DIMENSION; j2++) { //iterate row
+							for (int k = offSetX ; k < offSetX+SQRT_DIMENSION ; k++) { //iterate column
+								if (helperSudokuParam[k][j2]== numValue) {
 									counterUnique++;
 								}
 							}	
@@ -304,13 +285,13 @@ public class Sudoku {
 					 * put it into the sudokuToSolve
 					 */
 					if (isUnique) {
-						sudokuToSolve[j][i] = numValue;
-						helperSudoku[j][i] = 0;
+						sudokuToSolveParam[j][i] = numValue;
+						helperSudokuParam[j][i] = 0;
 						iSolvedSomething++;
 					}
 					isUnique = false; //reset is Unique
 				System.out.println("new entries");	
-				printSudoku(sudokuToSolve);
+				printSudoku(sudokuToSolveParam);
 					 
 				 }
 				
@@ -325,18 +306,19 @@ public class Sudoku {
 	 *
 	 * @param i             the i is the current number checked for in the sudoku
 	 * @param sudokuRange   the sudoku range
+	 * @return 
 	 */
-	private static void addEntriesPerLine(int i, int sudokuRange) {
+	private static Integer[][] addEntriesPerLine(int i, int sudokuRange, Integer[][] sudokuToSolveParam, Integer[][] helperSudokuParam) {
 		boolean isMatched = false;
 		boolean isEmpty = false;
 		int numValue = i;
 		// iterate over lines
 
-		for (int k = 0; k < sudokuToSolve.length; k++) {
+		for (int k = 0; k < sudokuToSolveParam.length; k++) {
 			// compare each item in a 'line' with i
-			for (int j = 0; j < sudokuToSolve.length; j++) {
+			for (int j = 0; j < sudokuToSolveParam.length; j++) {
 				// if any cell contains i -> set isMatched
-				if (sudokuToSolve[j][k].intValue() == numValue) {
+				if (sudokuToSolveParam[j][k].intValue() == numValue) {
 					isMatched = true;
 					break;
 				}
@@ -345,10 +327,10 @@ public class Sudoku {
 			// if the number does not occur in the line fill empty spaces with i in helper
 			// table
 			if (isMatched == false) {
-				for (int l = 0; l < sudokuToSolve.length; l++) {
+				for (int l = 0; l < sudokuToSolveParam.length; l++) {
 					// fill empty cells with i
-					if (sudokuToSolve[l][k].intValue() == 0) {
-						helperSudoku[l][k] = numValue;
+					if (sudokuToSolveParam[l][k].intValue() == 0) {
+						helperSudokuParam[l][k] = numValue;
 
 					}
 			
@@ -356,6 +338,7 @@ public class Sudoku {
 			}
 			isMatched = false; //reset isMatched
 		}
+	return helperSudokuParam;
 	} // End of findEmptyLine
 	
 	/**
@@ -363,15 +346,18 @@ public class Sudoku {
 	 *
 	 * @param i the i
 	 * @param sudokuRange the sudoku range
+	 * @param helperSudokuParam 
+	 * @param sudokuToSolveParam 
+	 * @return 
 	 */
-	private static void removeEntriesColumn(int i, int sudokuRange) {
+	private static Integer[][] removeEntriesColumn(int i, int sudokuRange, Integer[][] sudokuToSolveParam, Integer[][] helperSudokuParam) {
 		boolean isMatched = false;
 		// iterate over columns
 		for (int k = 0; k < sudokuRange; k++) {
 			// compare each item in a column with i
 			for (int j = 0; j < sudokuRange; j++) {
 				// if any cell contains i -> set isMatched
-				if (sudokuToSolve[k][j].intValue() == i) {
+				if (sudokuToSolveParam[k][j].intValue() == i) {
 					isMatched = true;
 					break;
 				}
@@ -379,10 +365,10 @@ public class Sudoku {
 			}
 			// if the number does occur in the column then replace all i entries with 0
 			if (isMatched) {
-				for (int l = 0; l < helperSudoku.length; l++) {
+				for (int l = 0; l < helperSudokuParam.length; l++) {
 					// fill i cells in helper with 0
-					if (helperSudoku[k][l].intValue() == i) {
-						helperSudoku[k][l] = 0;
+					if (helperSudokuParam[k][l].intValue() == i) {
+						helperSudokuParam[k][l] = 0;
 					}
 
 				}
@@ -392,6 +378,7 @@ public class Sudoku {
 			isMatched = false; //reset isMatched
 
 		}
+		return helperSudokuParam;
 	}  // End of removeEntries
 	
 	/**
@@ -399,29 +386,32 @@ public class Sudoku {
 	 *
 	 * @param i the i
 	 * @param sudokuRange the sudoku range
+	 * @param helperSudokuParam 
+	 * @param sudokuToSolveParam 
+	 * @return 
 	 */
-	private static void removeEntriesSubSquare(int i, int sudokuRange) {
+	private static Integer[][] removeEntriesSubSquare(int i, int sudokuRange, Integer[][] sudokuToSolveParam, Integer[][] helperSudokuParam) {
 		boolean isMatched = false;
 		int numVal = i;
 		int[] subSquareOffset= new int[2];
 		// iterate over subsquares
 		for (int m = 0; m < sudokuRange; m++) {
 			subSquareOffset = calculateSubSquareOffset(m,sudokuRange);
-			for (int k = 0+ subSquareOffset[0] ; k < subSquareOffset[0]+sqrtDimension; k++) {
+			for (int k = 0+ subSquareOffset[0] ; k < subSquareOffset[0]+SQRT_DIMENSION; k++) {
 				// compare each item in subsquare with i
-				for (int j= 0+ subSquareOffset[1]; j < subSquareOffset[1]+sqrtDimension; j++) {
+				for (int j= 0+ subSquareOffset[1]; j < subSquareOffset[1]+SQRT_DIMENSION; j++) {
 					// if any cell contains i -> set isMatched
-					if (sudokuToSolve[k][j].intValue() == numVal) {
+					if (sudokuToSolveParam[k][j].intValue() == numVal) {
 						isMatched = true;
 					}
 
 				}
 			}
 			if (isMatched) { //if isMatched delete all occurrences of i within the subsquare in the helperSudoku
-				for (int k = 0+ subSquareOffset[0] ; k < subSquareOffset[0]+sqrtDimension; k++) {
-					for (int j= 0+ subSquareOffset[1]; j < subSquareOffset[1]+sqrtDimension; j++) {
-						if (helperSudoku[k][j].intValue() == numVal) {
-							helperSudoku[k][j] = 0; 
+				for (int k = 0+ subSquareOffset[0] ; k < subSquareOffset[0]+SQRT_DIMENSION; k++) {
+					for (int j= 0+ subSquareOffset[1]; j < subSquareOffset[1]+SQRT_DIMENSION; j++) {
+						if (helperSudokuParam[k][j].intValue() == numVal) {
+							helperSudokuParam[k][j] = 0; 
 						}
 
 					}
@@ -430,7 +420,7 @@ public class Sudoku {
 			isMatched = false; //reset isMatched
 
 		}
-		
+		return helperSudokuParam;
 	}//end of removeEntriesSubSquare
 
 	/**
@@ -447,13 +437,13 @@ public class Sudoku {
 		
 		for (int i = 0; i < subSquareNum; i++) {
 			xCounter++;
-			if (xCounter >= sqrtDimension) {
+			if (xCounter >= SQRT_DIMENSION) {
 				xCounter = 0; //reset xCounter on line jump
 				yCounter++;		
 			}
 		}
-		returnOffset[0] = (int) (xCounter * sqrtDimension);
-		returnOffset[1] = (int) (yCounter * sqrtDimension);
+		returnOffset[0] = (int) (xCounter * SQRT_DIMENSION);
+		returnOffset[1] = (int) (yCounter * SQRT_DIMENSION);
 		return returnOffset;
 	}
 
@@ -542,5 +532,19 @@ public class Sudoku {
 		}
 
 	} // End of printSudoku()
+	
+	/**
+	 * Insert integers.
+	 *
+	 * Inserts given integer(numValue,x,y) into given sudoku
+	 * 
+	 * @param sudokuToSolveParam the sudoku to solve param
+	 * @param integersParam the integers param
+	 * @return the integer[][]
+	 */
+	private static Integer[][] insertIntegers(Integer[][] sudokuToSolveParam, Integer[] integersParam) {
+		sudokuToSolveParam[integersParam[1]][integersParam[2]]= integersParam[0];
+		return null;
+	} // End of insertIntegers()
 	
 }// End of Class
