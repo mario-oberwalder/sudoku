@@ -4,6 +4,7 @@ public class SudokuObjectSolvability {
 	private boolean isSolvable;
 	private Integer[][] sudokuArray;
 	private ArrayList<Integer[]> possibleEntries;
+	private boolean isSolved = false;
 
 	  public void SudokuObjectSolveablility(Boolean isSolvable, Integer[][] sudokuArray, ArrayList<Integer[]> possibleEntries) {
 	    this.isSolvable= isSolvable;
@@ -33,5 +34,13 @@ public class SudokuObjectSolvability {
 
 	public void setPossibleEntries(ArrayList<Integer[]> possibleEntries) {
 		this.possibleEntries = possibleEntries;
+	}
+
+	public boolean isSolved() {
+		return isSolved;
+	}
+
+	public void setSolved(boolean isSolved) {
+		this.isSolved = isSolved;
 	}
 }
