@@ -24,10 +24,13 @@ public class Sudoku {
 	 */
 	public static void main(String[] args) {
 		Integer[][] sudokuToSolve = generateSudoku(SUDOKU_DIMENSION);
-
-		printSudoku(sudokuToSolve);	
-		if(solveSudoku(sudokuToSolve).isSolved()) {
+		SudokuObjectSolvability solvedSudoku = new SudokuObjectSolvability();
+		
+		printSudoku(sudokuToSolve);
+		solvedSudoku = solveSudoku(sudokuToSolve);
+		if(solvedSudoku.isSolved()) {
 			System.out.println("Solved!");
+			printSudoku(solvedSudoku.getSudokuArray());
 		}
 
 	}// End of Main
@@ -43,8 +46,7 @@ public class Sudoku {
 		Integer[][] sudokuRandomEntry; //this will be given to called functions so we dont lose the "original" sudoku
 		ArrayList<Integer[]> possibleEntries = new ArrayList<Integer[]>(); //a list with possible solutions to iterate through and call recursively
 		SudokuObjectSolvability sudokuSolutionObject = new SudokuObjectSolvability();// this will be the current return object from solveSudokuclean to store all the interesting values
-		boolean correctPath = false; 
-		boolean isSolved = false; 
+
 		/* 
 		 * call solveSudokuClean and save the object to sudokuSolution
 		 * this gives us: 
@@ -88,7 +90,6 @@ public class Sudoku {
 	 * @return the integer[][]
 	 */
 	static SudokuObjectSolvability solveSudokuClean(Integer[][] sudokuToSolve) {
-		int numEmptyFields = findEmptyFields(sudokuToSolve);
 		int numFoundSolutions = 1;
 		ArrayList<Integer[]> possibleSolutions = new ArrayList<Integer[]>();
 		SudokuObjectSolvability tempSudokuObject = new SudokuObjectSolvability();
@@ -266,10 +267,6 @@ public class Sudoku {
 						sudokuToSolveParam[j][i] = numValue;
 						helperSudokuParam[j][i] = 0;
 						iSolvedSomething++;
-						
-						System.out.println(numValue +";"+j+","+i);
-						System.out.println("new entries");	
-						printSudoku(sudokuToSolveParam);
 
 					}
 					isUnique = false; //reset is Unique
@@ -293,7 +290,6 @@ public class Sudoku {
 	 */
 	private static Integer[][] addEntriesPerLine(int i, int sudokuRange, Integer[][] sudokuToSolveParam, Integer[][] helperSudokuParam) {
 		boolean isMatched = false;
-		boolean isEmpty = false;
 		int numValue = i;
 		// iterate over lines
 
@@ -439,7 +435,7 @@ public class Sudoku {
 	private static Integer[][] generateSudoku(int i) {
 		//tempInteger [column][row]
 		Integer[][] tempInteger = 
-			{{5,6,0,8,4,7,0,0,0},
+				/*	{{5,6,0,8,4,7,0,0,0},
 					{3,0,9,0,0,0,6,0,0},
 					{0,0,8,0,0,0,0,0,0},
 					{0,1,0,0,8,0,0,4,0},
@@ -448,9 +444,9 @@ public class Sudoku {
 					{0,0,0,0,0,0,2,0,0},
 					{0,0,6,0,0,0,8,0,7},
 					{0,0,0,3,1,6,0,5,9},
-			}; /*
-				{{0,0,0,0,4,0,0,0,0},
-			{3,0,9,0,0,0,6,0,0},
+			}; 
+				{{0,0,0,0,0,0,0,0,0},
+			{0,0,9,0,0,0,6,0,0},
 			{0,0,8,0,0,0,0,0,0},
 			{0,1,0,0,8,0,0,4,0},
 			{7,9,0,6,0,2,0,1,8},
@@ -458,6 +454,26 @@ public class Sudoku {
 			{0,0,0,0,0,0,2,0,0},
 			{0,0,6,0,0,0,8,0,7},
 			{0,0,0,3,1,6,0,5,9},
+					 }; */
+	{{0,0,0,0,0,0,8,4,0},
+	{0,0,0,0,5,0,0,0,2},
+	{0,5,7,3,0,0,9,0,0},
+	{1,2,0,7,4,0,0,0,0},
+	{0,0,0,0,6,8,7,0,0},
+	{4,0,0,0,0,9,0,0,0},
+	{0,0,0,0,7,0,4,0,6},
+	{9,1,0,0,0,0,0,0,0},
+	{0,0,3,0,0,0,0,0,0},
+			 }; /*
+		   {{3,0,0,0,6,0,2,0,0},
+			{0,0,0,0,0,0,0,0,0},
+			{4,2,0,0,0,0,6,0,0},
+			{0,8,0,0,0,0,9,0,3},
+			{2,0,0,0,0,1,0,0,0},
+			{1,4,0,8,0,9,0,0,0},
+			{0,0,0,3,1,0,0,4,7},
+			{0,6,0,0,0,5,0,0,0},
+			{0,0,0,7,0,0,8,3,0},
 					 }; */
 		return tempInteger;
 	}
