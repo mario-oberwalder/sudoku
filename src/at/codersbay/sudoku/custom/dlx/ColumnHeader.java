@@ -12,23 +12,20 @@ public class ColumnHeader  extends Node{
 	 *
 	 * @param myMasterHead the my master head
 	 */
-	public void introduceToCrown(HeaderCrown headerCrown) {
-		int currentIndex = headerCrown.listOfColumnHeaders.indexOf(this);
-		/*correction so that setPrevNode wont be a null pointer for the first node */
-		if (headerCrown.listOfColumnHeaders.size() < 1) {
-			currentIndex++;
-		} 
-		this.setPrevNode(headerCrown.listOfColumnHeaders.get(currentIndex-1));
-		this.setNextNode(headerCrown.listOfColumnHeaders.get(0));
-
+	public void appendToColumn(Node node) {
+		Node upNode = null;
+		if(this.getUpNode() != null) {
+			upNode =this.getUpNode();
+		} else {
+			upNode = this;
+		}		
+		Node downNode = this;
+		upNode.setDownNode(node);
+		node.setUpNode(upNode);
+		node.setDownNode(downNode);
+		downNode.setUpNode(node);
 	}
 		
-	
-	
-	public void createCrown(HeaderCrown headerCrown) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	public int getSize() {
 		return Size;
