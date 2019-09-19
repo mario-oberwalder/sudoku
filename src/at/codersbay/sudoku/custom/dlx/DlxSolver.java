@@ -15,7 +15,7 @@ public class DlxSolver {
 	}
 
 	/*parse existing sudoku and select corresponding headers in the headerCrown*/
-	void iterateOverSudoku() {
+	void applySudokuToDLL() {
 		for (int i = 0; i < SudokuNotSeppuku.SUDOKU_DIMENSION; i++) {
 			for (int j = 0; j < SudokuNotSeppuku.SUDOKU_DIMENSION; j++) {
 				if (sudokuToSolve[j][i] != 0) {

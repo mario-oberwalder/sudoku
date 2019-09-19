@@ -50,7 +50,7 @@ public class SudokuNotSeppuku {
 		headerCrown.generateNodes();// generate Nodes
 		//headerCrown.generateSize(); //calculate size of each ColumnHeader
 		dlxSolver = new DlxSolver(headerCrown, sudokuToSolve);
-		dlxSolver.iterateOverSudoku();
+		dlxSolver.applySudokuToDLL();
 		headerCrown.print();
 		
 		
