@@ -25,7 +25,12 @@ public class ColumnHeader  extends Node{
 		node.setDownNode(downNode);
 		downNode.setUpNode(node);
 	}
-		
+	
+	public void removeFromDLL() {
+		this.getPrevNode().setNextNode(this.getNextNode());
+		this.getNextNode().setPrevNode(this.getPrevNode());
+	}
+	
 	
 	public int getSize() {
 		return Size;
@@ -39,6 +44,12 @@ public class ColumnHeader  extends Node{
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public int getIndexOf(HeaderCrown headerCrown) {
+		return headerCrown.listOfColumnHeaders.indexOf(this);
+	}
+
+
 
 
 	

@@ -50,6 +50,8 @@ public class SudokuNotSeppuku {
 		headerCrown.generateNodes();
 		//headerCrown.print();
 		dlxSolver = new DlxSolver(headerCrown, sudokuToSolve);
+		dlxSolver.iterateOverSudoku();
+		headerCrown.print();
 		
 		
 		
