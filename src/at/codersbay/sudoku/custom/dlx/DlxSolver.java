@@ -30,6 +30,7 @@ public class DlxSolver {
 		ColumnHeader selectedHeader = null;
 		Node selectedNode = null;
 		Node startNode = null;
+		Node verticalStartNode = null;
 
 		selectedHeader = headerCrown.listOfColumnHeaders.get(cellIndex);
 		for (int i = 0; i < sudokuNumber; i++) {
@@ -49,14 +50,15 @@ public class DlxSolver {
 		/*for each node in the selected line, go to each downward node and delete all headers for that line of nodes */
 		do {
 			selectedNode = selectedNode.getNextNode();
-			
+			verticalStartNode = selectedNode;
 			do {
+				
 				selectedNode.getColumnHead().removeFromDLL();
 				selectedNode = selectedNode.getDownNode();
 				removeLine(selectedNode);	
 
 			}
-			while(startNode != selectedNode);
+			while(verticalStartNode != selectedNode);
 		}
 		while(startNode != selectedNode);
 

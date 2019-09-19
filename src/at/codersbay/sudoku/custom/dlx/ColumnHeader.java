@@ -4,6 +4,9 @@ public class ColumnHeader  extends Node{
 	private int Size;
 	private String name;
 	
+	public ColumnHeader () {
+		this.setColumnHead(this);
+	}
 	/**
 	 * Introduce to list.
 	 *
