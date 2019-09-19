@@ -17,7 +17,7 @@ public class HeaderCrown {
 
 	/** The list of column headers. */
 	ArrayList<ColumnHeader> listOfColumnHeaders = new ArrayList<ColumnHeader>();
-
+	Integer[] solutionArray = new Integer[81];
 	/**
 	 * Adds the.
 	 *
@@ -118,9 +118,17 @@ public class HeaderCrown {
 				choiceSubNode.setUpNode(choicePrevSubNode);
 				choicePrevSubNode = choiceSubNode;
 			}
-			/* stitching the nodes together at the end = beginning */
-			choicePrevSubNode.setDownNode(this.listOfColumnHeaders.get(i));
-			this.listOfColumnHeaders.get(i).setUpNode(choicePrevSubNode);
+			/* stitching the nodes together at the end = beginning 
+			 * 
+			 * important: when stitching together we make sure 
+			 * that the columnHead has its connections 
+			 * but we stitch together the nodes 
+			 * excluding the columnHead
+			 * 
+			 * */
+			choiceSubNode.setDownNode(this.listOfColumnHeaders.get(i).getDownNode());
+			this.listOfColumnHeaders.get(i).setUpNode(choiceSubNode);
+			this.listOfColumnHeaders.get(i).getDownNode().setUpNode(choiceSubNode);
 		}
 
 		/*for each cellConstraintNode generate the corresponding constraint nodes
@@ -147,7 +155,7 @@ public class HeaderCrown {
 				colConstraintNode.setColumnHead(this.listOfColumnHeaders.get(colOffset)); 
 				subConstraintNode.setColumnHead(this.listOfColumnHeaders.get(subOffset)); 
 				
-				this.listOfColumnHeaders.get(rowOffset).appendToColumn(rowConstraintNode);
+				this.listOfColumnHeaders.get(rowOffset).appendToColumn(rowConstraintNode); 
 				this.listOfColumnHeaders.get(colOffset).appendToColumn(colConstraintNode);
 				this.listOfColumnHeaders.get(subOffset).appendToColumn(subConstraintNode);
 				
@@ -164,6 +172,9 @@ public class HeaderCrown {
 				
 				cellConstraintNode = cellConstraintNode.getDownNode(); //travel down a node
 			}
+			
+			
+			
 		}
 	}
 

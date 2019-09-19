@@ -46,9 +46,9 @@ public class SudokuNotSeppuku {
 		
 	
 		/* generate the header structure according to constraints and sudoku dimension */
-		headerCrown.generateHeaderCrown();
-		headerCrown.generateNodes();
-		//headerCrown.print();
+		headerCrown.generateHeaderCrown(); //generate ring of ColumnHeaders
+		headerCrown.generateNodes();// generate Nodes
+		//headerCrown.generateSize(); //calculate size of each ColumnHeader
 		dlxSolver = new DlxSolver(headerCrown, sudokuToSolve);
 		dlxSolver.iterateOverSudoku();
 		headerCrown.print();

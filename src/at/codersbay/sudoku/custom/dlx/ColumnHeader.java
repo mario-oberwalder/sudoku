@@ -7,22 +7,24 @@ public class ColumnHeader  extends Node{
 	public ColumnHeader () {
 		this.setColumnHead(this);
 	}
-	/**
-	 * Introduce to list.
-	 *
-	 * Insert a ColumnHeader at the last position in the "crown"
-	 * the crown is a ring shaped horizontal DoubleLinkedList-structure 
-	 *
-	 * @param myMasterHead the my master head
-	 */
+	
+	
 	public void appendToColumn(Node node) {
 		Node upNode = null;
+		Node downNode = null;
+		
 		if(this.getUpNode() != null) {
 			upNode =this.getUpNode();
 		} else {
-			upNode = this;
+			upNode = node;
 		}		
-		Node downNode = this;
+		
+		if(this.getDownNode() != null) {
+			downNode =this.getDownNode();
+		} else {
+			downNode = node;
+		}		
+		
 		upNode.setDownNode(node);
 		node.setUpNode(upNode);
 		node.setDownNode(downNode);
