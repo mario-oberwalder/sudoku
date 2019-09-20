@@ -56,6 +56,14 @@ public class DlxSolver {
 	/**
 	 * Select header.
 	 *
+	 * I)for the header at cellindex, select(add it to solutionArray),
+	 * and remove it from the header DLL
+	 * II)sudokuNumber tells you which row was selected for all nodes
+	 * in that row select their header.
+	 * III)for all nodes in a column with a selected header, 
+	 * find all headers that have a node in the same row and remove 
+	 * them. 
+	 *
 	 * @param cellIndex the cell index
 	 * @param sudokuNumber the sudoku number
 	 */
