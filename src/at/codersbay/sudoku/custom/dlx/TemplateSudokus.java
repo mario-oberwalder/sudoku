@@ -1,5 +1,15 @@
 package at.codersbay.sudoku.custom.dlx;
 
+// TODO: Auto-generated Javadoc
+/**
+ * the Class TemplateSudokus.
+ * 
+ * content:
+ * 
+ * copyright: 2019 mario oberwalder
+ * 
+ * contact: mario.oberwalder@gmail.com
+ */
 public class TemplateSudokus {
 
 	/**
@@ -57,10 +67,9 @@ public class TemplateSudokus {
 
 	/**
 	 * Generate empty sudoku.
+	 * 
+	 * tempInteger [column][row]
 	 *
-	 *tempInteger [column][row]
-	 *
-	 * @param i the i
 	 * @return the integer[][]
 	 */
 	public static Integer[][] generateEmptySudoku() {

@@ -2,18 +2,45 @@ package at.codersbay.sudoku.custom.dlx;
 
 import java.awt.FontFormatException;
 
+// TODO: Auto-generated Javadoc
+/**
+ * the Class DlxSolver.
+ * 
+ * content:
+ * 
+ * copyright: 2019 mario oberwalder
+ * 
+ * contact: mario.oberwalder@gmail.com
+ */
 public class DlxSolver {
+	
+	/** The solved sudoku. */
 	private Integer[][] solvedSudoku = TemplateSudokus.generateEmptySudoku();
+	
+	/** The sudoku to solve. */
 	private Integer[][] sudokuToSolve = null;
+	
+	/** The header crown. */
 	private HeaderCrown headerCrown = null;
+	
+	/** The solution array. */
 	private Integer[] solutionArray = new Integer[81];
 
 
+	/**
+	 * Instantiates a new dlx solver.
+	 *
+	 * @param headerCrown the header crown
+	 * @param sudokuToSolve the sudoku to solve
+	 */
 	public DlxSolver(HeaderCrown headerCrown,  Integer[][] sudokuToSolve){
 		this.headerCrown = headerCrown;
 		this.sudokuToSolve= sudokuToSolve;
 	}
 
+	/**
+	 * Apply sudoku to DLL.
+	 */
 	/*parse existing sudoku and select corresponding headers in the headerCrown*/
 	void applySudokuToDLL() {
 		for (int i = 0; i < SudokuNotSeppuku.SUDOKU_DIMENSION; i++) {
@@ -26,6 +53,12 @@ public class DlxSolver {
 
 	}
 
+	/**
+	 * Select header.
+	 *
+	 * @param cellIndex the cell index
+	 * @param sudokuNumber the sudoku number
+	 */
 	private void selectHeader(int cellIndex, int sudokuNumber) {
 		ColumnHeader selectedHeader = null;
 		Node selectedNode = null;
@@ -64,6 +97,11 @@ public class DlxSolver {
 
 	}
 
+	/**
+	 * Removes the line.
+	 *
+	 * @param selectedNode the selected node
+	 */
 	private void removeLine(Node selectedNode) {
 		Node startNode= selectedNode;
 		do {
