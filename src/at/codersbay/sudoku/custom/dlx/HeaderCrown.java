@@ -17,6 +17,7 @@ public class HeaderCrown {
 
 	/** The list of column headers. */
 	ArrayList<ColumnHeader> listOfColumnHeaders = new ArrayList<ColumnHeader>();
+	ArrayList<ColumnHeader> unselectedHeaders = new ArrayList<ColumnHeader>();
 	Integer[] solutionArray = new Integer[81];
 	/**
 	 * Adds the.
@@ -25,7 +26,9 @@ public class HeaderCrown {
 	 * @return true, if successful
 	 */
 	public boolean add(ColumnHeader e) {
+		unselectedHeaders.add(e);
 		return listOfColumnHeaders.add(e);
+		
 	}
 
 	/**
@@ -47,7 +50,7 @@ public class HeaderCrown {
 	 * @return the header crown
 	 */
 	public void generateHeaderCrown() {
-		ColumnHeader previousNumberHeader = new ColumnHeader();
+		ColumnHeader previousNumberHeader;
 		ColumnHeader numberHeader = new ColumnHeader();
 		/* build header structure for constraints
 		 * for each number generate a header according to the constraints
@@ -112,7 +115,8 @@ public class HeaderCrown {
 		for (int i = 0; i < SudokuNotSeppuku.DIMENSION_SQRD; i++) {
 			choicePrevSubNode = this.listOfColumnHeaders.get(i);
 			for (int j = 0; j < SudokuNotSeppuku.SUDOKU_DIMENSION; j++) {
-				choiceSubNode = new Node();
+				RowHeader rowHeader = new RowHeader(j);
+				choiceSubNode = new Node(rowHeader);
 				choiceSubNode.setColumnHead(this.listOfColumnHeaders.get(i));
 				choicePrevSubNode.setDownNode(choiceSubNode);
 				choiceSubNode.setUpNode(choicePrevSubNode);
@@ -133,13 +137,14 @@ public class HeaderCrown {
 
 		/*for each cellConstraintNode generate the corresponding constraint nodes
 		 * there are n= SUDOKU_DIMENSION nodes for each header
+		 * also generate row heads
 		 * */
 		for (int i = 0; i < SudokuNotSeppuku.DIMENSION_SQRD; i++) {
 			Node cellConstraintNode = this.listOfColumnHeaders.get(i).getDownNode();
 			for (int j = 0; j < SudokuNotSeppuku.SUDOKU_DIMENSION; j++) {
-				Node rowConstraintNode = new Node();
-				Node colConstraintNode = new Node();
-				Node subConstraintNode = new Node();
+				Node rowConstraintNode = new Node(cellConstraintNode.getRowHead());
+				Node colConstraintNode = new Node(cellConstraintNode.getRowHead());
+				Node subConstraintNode = new Node(cellConstraintNode.getRowHead());
 				int offsetDimension = SudokuNotSeppuku.DIMENSION_SQRD;
 				
 				int rowOffset = offsetDimension;
@@ -154,6 +159,7 @@ public class HeaderCrown {
 				rowConstraintNode.setColumnHead(this.listOfColumnHeaders.get(rowOffset)); 
 				colConstraintNode.setColumnHead(this.listOfColumnHeaders.get(colOffset)); 
 				subConstraintNode.setColumnHead(this.listOfColumnHeaders.get(subOffset)); 
+				
 				
 				this.listOfColumnHeaders.get(rowOffset).appendToColumn(rowConstraintNode); 
 				this.listOfColumnHeaders.get(colOffset).appendToColumn(colConstraintNode);
@@ -187,6 +193,12 @@ public class HeaderCrown {
 			System.out.print(columnHeader.getName()+"-");		
 			columnHeader = (ColumnHeader) columnHeader.getNextNode();
 		}
+	}
+
+	public void generateSize() {
+		ColumnHeader columnHeader = this.listOfColumnHeaders.get(0);
+		
+		
 	}
 
 

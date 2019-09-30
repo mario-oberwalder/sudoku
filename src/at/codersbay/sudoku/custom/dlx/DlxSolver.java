@@ -1,6 +1,7 @@
 package at.codersbay.sudoku.custom.dlx;
 
 import java.awt.FontFormatException;
+import java.util.ArrayList;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -22,6 +23,8 @@ public class DlxSolver {
 	
 	/** The header crown. */
 	private HeaderCrown headerCrown = null;
+	
+	private ArrayList<Integer[]> arrayOfSolutions = new ArrayList<>();
 	
 	/** The solution array. */
 	private Integer[] solutionArray = new Integer[81];
@@ -64,8 +67,8 @@ public class DlxSolver {
 	 * find all headers that have a node in the same row and remove 
 	 * them. 
 	 *
-	 * @param cellIndex the cell index
-	 * @param sudokuNumber the sudoku number
+	 * @param cellIndex the cell index (0..80)
+	 * @param sudokuNumber the sudoku number (1..9)
 	 */
 	private void selectHeader(int cellIndex, int sudokuNumber) {
 		ColumnHeader selectedHeader = null;
@@ -77,13 +80,19 @@ public class DlxSolver {
 		for (int i = 0; i < sudokuNumber; i++) {
 			selectedNode = selectedHeader.getDownNode();
 			startNode=selectedNode;
-		}	
-		solutionArray[cellIndex] = (cellIndex % SudokuNotSeppuku.SUDOKU_DIMENSION); //add cellheader to solution array
+		}
+		
+		/*put element into solution */
+		solutionArray[cellIndex] = startNode.getRowHead().getSudokuNumber();	 
 		
 		/* remove headers from the selected choice*/
 		do {
 			cellIndex = selectedNode.getColumnHead().getIndexOf(headerCrown);
+			/*remove from DLL*/
 			selectedNode.getColumnHead().removeFromDLL();
+			/*remove from unselectedHeaderList */
+			this.headerCrown.unselectedHeaders.remove(selectedNode.getColumnHead());
+			
 			selectedNode = selectedNode.getNextNode();
 		}
 		while(startNode != selectedNode);
@@ -95,6 +104,7 @@ public class DlxSolver {
 			do {
 				
 				selectedNode.getColumnHead().removeFromDLL();
+				this.headerCrown.unselectedHeaders.remove(selectedNode.getColumnHead());
 				selectedNode = selectedNode.getDownNode();
 				removeLine(selectedNode);	
 
@@ -114,10 +124,44 @@ public class DlxSolver {
 		Node startNode= selectedNode;
 		do {
 			selectedNode.getColumnHead().removeFromDLL();
+			this.headerCrown.unselectedHeaders.remove(selectedNode.getColumnHead());
 			selectedNode = selectedNode.getNextNode();
 		}
 		while(startNode != selectedNode);
 
+	}
+
+	public void solve(HeaderCrown headerCrown2, Integer[][] sudokuToSolve2) {
+		this.headerCrown = headerCrown2;
+		this.sudokuToSolve = sudokuToSolve2;
+		this.solve();
+		
+	}
+	
+	private boolean isSolved() {
+		/* when the array is full and there are no headers left the sudoku is solved */
+		boolean isArrayFull =  true;
+		boolean noMoreUnselectedHeaders = false;
+		
+		for (int i = 0; i < solutionArray.length; i++) {
+			if (solutionArray[i] == 0) {
+				isArrayFull = false;
+			}
+		}
+		
+		noMoreUnselectedHeaders = this.headerCrown.unselectedHeaders.isEmpty();
+		
+		if(isArrayFull && noMoreUnselectedHeaders) 
+		{
+			return true;
+		}
+		
+		return false;
+	};
+	
+	public void solve() {
+		
+		
 	}
 
 }

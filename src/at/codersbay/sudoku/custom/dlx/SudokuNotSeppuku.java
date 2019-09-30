@@ -33,9 +33,9 @@ public class SudokuNotSeppuku {
 		 * 	-sudoku hard coded for now
 		 * TODO II. validate sudoku 
 		 * 	-not implemented
-		 * TODO III. generate exact cover matrix/DLL 
+		 * III. generate exact cover matrix/DLL 
 		 *  -probably going directly to DoubleLinkedList representation 
-		 *  -pre- or post-consideration of already present entries
+		 *  -pre-consideration of already present entries
 		 * TODO IV. recursively find solutions
 		 * V. profit!
 		 * */
@@ -48,11 +48,11 @@ public class SudokuNotSeppuku {
 		/* generate the header structure according to constraints and sudoku dimension */
 		headerCrown.generateHeaderCrown(); //generate ring of ColumnHeaders
 		headerCrown.generateNodes();// generate Nodes
-		//headerCrown.generateSize(); //calculate size of each ColumnHeader
+		headerCrown.generateSize(); //calculate size of each ColumnHeader
 		dlxSolver = new DlxSolver(headerCrown, sudokuToSolve);
-		dlxSolver.applySudokuToDLL();
-		headerCrown.print();
-		
+		dlxSolver.applySudokuToDLL(); 
+		headerCrown.print(); //debug print the header structure
+		dlxSolver.solve(); //call sudoku solver, we already passed headerCrown and sudokuToSolve previously
 		
 		
 

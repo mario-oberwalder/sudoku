@@ -27,6 +27,16 @@ public class Node {
 	/** The column head. */
 	private ColumnHeader columnHead;
 	
+	private RowHeader rowHead;
+	
+	public Node() {
+	
+	}
+	
+	public Node(RowHeader rowHeader) {
+		this.rowHead = rowHeader;
+	}
+
 	/**
 	 * Gets the column head.
 	 *
@@ -115,6 +125,14 @@ public class Node {
 	 */
 	public void setDownNode(Node downNode) {
 		this.downNode = downNode;
+	}
+
+	public RowHeader getRowHead() {
+		return rowHead;
+	}
+
+	public void setRowHead(RowHeader rowHead) {
+		this.rowHead = rowHead;
 	}
 	
 }

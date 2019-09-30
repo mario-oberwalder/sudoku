@@ -77,7 +77,12 @@ public class ColumnHeader  extends Node{
 	 * @param size the new size
 	 */
 	public void setSize(int size) {
-		Size = size;
+		this.Size=0;
+		Node nextNode = this.getDownNode();
+		while(nextNode != this) {
+			Size++;
+			nextNode = nextNode.getDownNode();
+		}
 	}
 	
 	/**
