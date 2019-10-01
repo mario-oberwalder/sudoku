@@ -7,7 +7,8 @@ import java.awt.List;
  * the Class SudokuNotSepoku.
  * 
  * content: sudoku solver with a custom implementation of
- * 			dan knuths dlx.
+ * 			don knuths dlx.
+ *			
  * 
  * copyright: 2019 mario oberwalder
  * 
@@ -15,19 +16,26 @@ import java.awt.List;
  */
 public class SudokuNotSeppuku {
 
-	/**
-	 * the main method.
-	 *
-	 * @param args the arguments
-	 */
-
 	public final static int SUDOKU_DIMENSION = 9;
 	public final static int DIMENSION_SQRD = SUDOKU_DIMENSION*SUDOKU_DIMENSION;
 	public final static int SQRT_DIMENSION = (int) Math.sqrt(SUDOKU_DIMENSION);
 	public final static int NUM_CONSTRAINTS = 4;
 
+	/**
+	 * the main method.
+	 *
+	 *we generate a Double linked list(DLL) with rows and columns the 
+	 *first and last element are connected so it resembles a torus
+	 *
+	 *each column has a columnHead and each row has a rowHead
+	 *the columnHeads are organized in a header'Crown'
+	 *
+	 *to solve the sudoku a exact cover matrix is generated which is 
+	 *represented by the DLL, then a lot of liked list switching occurs
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		/* TODO I.sudoku user I/O 
 		 * 	- not implemented 
 		 * 	-sudoku hard coded for now
