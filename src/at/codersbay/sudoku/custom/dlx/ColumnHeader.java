@@ -32,6 +32,8 @@ public class ColumnHeader  extends Node{
 	 * @param node the node
 	 */
 	public void appendToColumn(Node node) {
+		
+		/*see that the node gets its connections and keep columnHead up to date*/
 		Node upNode = null;
 		Node downNode = null;
 		
@@ -39,18 +41,24 @@ public class ColumnHeader  extends Node{
 			upNode =this.getUpNode();
 		} else {
 			upNode = node;
+			this.setUpNode(node);
+			this.setDownNode(node);
 		}		
 		
 		if(this.getDownNode() != null) {
 			downNode =this.getDownNode();
 		} else {
 			downNode = node;
+			this.setUpNode(node);
+			this.setDownNode(node);
 		}		
 		
 		upNode.setDownNode(node);
 		node.setUpNode(upNode);
 		node.setDownNode(downNode);
 		downNode.setUpNode(node);
+		this.setUpNode(node);
+		
 	}
 	
 	/**
@@ -76,10 +84,12 @@ public class ColumnHeader  extends Node{
 	 *
 	 * @param size the new size
 	 */
-	public void setSize(int size) {
+	public void setSize() {
 		this.Size=0;
-		Node nextNode = this.getDownNode();
-		while(nextNode != this) {
+		Node startNode = this.getDownNode();
+		Node nextNode = startNode.getDownNode();
+		
+		while(nextNode != startNode) {
 			Size++;
 			nextNode = nextNode.getDownNode();
 		}

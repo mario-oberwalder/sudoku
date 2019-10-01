@@ -155,26 +155,27 @@ public class HeaderCrown {
 				colOffset += (j + (i*SudokuNotSeppuku.SUDOKU_DIMENSION))% SudokuNotSeppuku.DIMENSION_SQRD;
 				subOffset +=  j + ((i/SudokuNotSeppuku.SUDOKU_DIMENSION)/SudokuNotSeppuku.SQRT_DIMENSION)*SudokuNotSeppuku.SQRT_DIMENSION*SudokuNotSeppuku.SUDOKU_DIMENSION +
 						((i%SudokuNotSeppuku.SUDOKU_DIMENSION)%SudokuNotSeppuku.SQRT_DIMENSION)*SudokuNotSeppuku.SUDOKU_DIMENSION;
-				
+				/*set columnHead */
 				rowConstraintNode.setColumnHead(this.listOfColumnHeaders.get(rowOffset)); 
 				colConstraintNode.setColumnHead(this.listOfColumnHeaders.get(colOffset)); 
 				subConstraintNode.setColumnHead(this.listOfColumnHeaders.get(subOffset)); 
 				
-				
+				/*vertical DLL connections*/
 				this.listOfColumnHeaders.get(rowOffset).appendToColumn(rowConstraintNode); 
 				this.listOfColumnHeaders.get(colOffset).appendToColumn(colConstraintNode);
 				this.listOfColumnHeaders.get(subOffset).appendToColumn(subConstraintNode);
-				
-								
+			    /*horizontal DLL connections forward */
 				cellConstraintNode.setNextNode(rowConstraintNode);
 				rowConstraintNode.setNextNode(colConstraintNode);
 				colConstraintNode.setNextNode(subConstraintNode);
 				subConstraintNode.setNextNode(cellConstraintNode);
-				
+				/*horizontal DLL connections backward*/
 				cellConstraintNode.setPrevNode(subConstraintNode);
 				rowConstraintNode.setPrevNode(cellConstraintNode);
 				colConstraintNode.setPrevNode(rowConstraintNode);
 				subConstraintNode.setPrevNode(colConstraintNode);
+				
+				
 				
 				cellConstraintNode = cellConstraintNode.getDownNode(); //travel down a node
 			}
@@ -196,7 +197,10 @@ public class HeaderCrown {
 	}
 
 	public void generateSize() {
-		ColumnHeader columnHeader = this.listOfColumnHeaders.get(0);
+		for (ColumnHeader columnHeader : this.listOfColumnHeaders)
+		{
+			columnHeader.setSize();
+		}
 		
 		
 	}

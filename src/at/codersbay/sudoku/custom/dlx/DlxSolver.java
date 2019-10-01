@@ -2,6 +2,8 @@ package at.codersbay.sudoku.custom.dlx;
 
 import java.awt.FontFormatException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -14,18 +16,18 @@ import java.util.ArrayList;
  * contact: mario.oberwalder@gmail.com
  */
 public class DlxSolver {
-	
+
 	/** The solved sudoku. */
 	private Integer[][] solvedSudoku = TemplateSudokus.generateEmptySudoku();
-	
+
 	/** The sudoku to solve. */
 	private Integer[][] sudokuToSolve = null;
-	
+
 	/** The header crown. */
 	private HeaderCrown headerCrown = null;
-	
+
 	private ArrayList<Integer[]> arrayOfSolutions = new ArrayList<>();
-	
+
 	/** The solution array. */
 	private Integer[] solutionArray = new Integer[81];
 
@@ -81,10 +83,10 @@ public class DlxSolver {
 			selectedNode = selectedHeader.getDownNode();
 			startNode=selectedNode;
 		}
-		
+
 		/*put element into solution */
 		solutionArray[cellIndex] = startNode.getRowHead().getSudokuNumber();	 
-		
+
 		/* remove headers from the selected choice*/
 		do {
 			cellIndex = selectedNode.getColumnHead().getIndexOf(headerCrown);
@@ -92,7 +94,7 @@ public class DlxSolver {
 			selectedNode.getColumnHead().removeFromDLL();
 			/*remove from unselectedHeaderList */
 			this.headerCrown.unselectedHeaders.remove(selectedNode.getColumnHead());
-			
+
 			selectedNode = selectedNode.getNextNode();
 		}
 		while(startNode != selectedNode);
@@ -102,7 +104,7 @@ public class DlxSolver {
 			selectedNode = selectedNode.getNextNode();
 			verticalStartNode = selectedNode;
 			do {
-				
+
 				selectedNode.getColumnHead().removeFromDLL();
 				this.headerCrown.unselectedHeaders.remove(selectedNode.getColumnHead());
 				selectedNode = selectedNode.getDownNode();
@@ -135,33 +137,40 @@ public class DlxSolver {
 		this.headerCrown = headerCrown2;
 		this.sudokuToSolve = sudokuToSolve2;
 		this.solve();
-		
+
 	}
-	
+
 	private boolean isSolved() {
 		/* when the array is full and there are no headers left the sudoku is solved */
 		boolean isArrayFull =  true;
 		boolean noMoreUnselectedHeaders = false;
-		
+
 		for (int i = 0; i < solutionArray.length; i++) {
 			if (solutionArray[i] == 0) {
 				isArrayFull = false;
 			}
 		}
-		
+
 		noMoreUnselectedHeaders = this.headerCrown.unselectedHeaders.isEmpty();
-		
+
 		if(isArrayFull && noMoreUnselectedHeaders) 
 		{
 			return true;
 		}
-		
+
 		return false;
 	};
-	
+
 	public void solve() {
-		
-		
+		/*sort list of unselected headers*/
+		this.headerCrown.unselectedHeaders.sort(Comparator.comparing(ColumnHeader::getSize));
+		System.out.println("bla");
 	}
 
-}
+		
+	
+	
+	
+} // end of class
+
+
